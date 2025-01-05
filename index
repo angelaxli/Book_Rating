@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Rating App</title>
+    <style>
+        body {
+            background-color: rgb(30, 135, 35);
+            font-family: monospace;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+        }
+        .board {
+            background-color: white;
+            width: 300px;
+            height: 300px;
+            margin-bottom: 20px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+        .board div {
+            margin: 5px;
+        }
+        .button {
+            margin: 10px;
+            padding: 10px;
+            background-color: black;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 15px;
+        }
+        .button:hover {
+            background-color: gray;
+        }
+        .warning {
+            color: red;
+            display: none;
+        }
+        .results {
+            margin-top: 10px;
+        }
+        .results div {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="board" id="bookBoard">
+            <div><strong>All Books:</strong></div>
+            <div id="bookList"></div>
+        </div>
+        <button class="button" id="addBookButton">Add Book</button>
+        <button class="button" id="sortBooksButton">Sort Books</button>
+        <div class="warning" id="catWarn">Number of Categories is invalid, try again!</div>
+        <div class="warning" id="ratingWarn">Your rating is invalid, try again!</div>
+        <div class="results" id="results">
+            <div id="bestBooks"></div>
+            <div id="goodBooks"></div>
+            <div id="okayBooks"></div>
+            <div id="badBooks"></div>
+            <div id="worstBooks"></div>
+        </div>
+    </div>
+    <script>
+        const books = [];
+        const ratings = [];
+
+        function addBook() {
+            const bookName = prompt("What is the book name?");
+            const bookRating = parseInt(prompt("What is your rating of the book? 1-10"));
+
+            if (bookRating > 0 && bookRating <= 10) {
+                books.push(bookName);
+                ratings.push(bookRating);
+
+                const bookList = document.getElementById("bookList");
+                const newBook = document.createElement("div");
+                newBook.textContent = bookName;
+                bookList.appendChild(newBook);
+            } else {
+                document.getElementById("ratingWarn").style.display = "block";
+            }
+        }
+
+        function classifyBooks() {
+            const numCat = parseInt(prompt("How many categories? 2 or 5"));
+            document.getElementById("catWarn").style.display = "none";
+
+            let best = 0, good = 0, okay = 0, bad = 0, worst = 0;
+
+            if (numCat === 2 || numCat === 5) {
+                ratings.forEach(rating => {
+                    if (numCat === 2) {
+                        if (rating > 5) good++;
+                        else bad++;
+                    } else if (numCat === 5) {
+                        if (rating > 8) best++;
+                        else if (rating > 6) good++;
+                        else if (rating > 4) okay++;
+                        else if (rating > 2) bad++;
+                        else worst++;
+                    }
+                });
+
+                document.getElementById("bestBooks").textContent = `Best Books: ${best}`;
+                document.getElementById("goodBooks").textContent = `Good Books: ${good}`;
+                document.getElementById("okayBooks").textContent = `Okay Books: ${okay}`;
+                document.getElementById("badBooks").textContent = `Bad Books: ${bad}`;
+                document.getElementById("worstBooks").textContent = `Worst Books: ${worst}`;
+            } else {
+                document.getElementById("catWarn").style.display = "block";
+            }
+        }
+
+        document.getElementById("addBookButton").addEventListener("click", addBook);
+        document.getElementById("sortBooksButton").addEventListener("click", classifyBooks);
+    </script>
+</body>
+</html>
